@@ -1,8 +1,16 @@
 const express = require("express");
+const connectToDB = require("./config/mongo.config");
 const app = express();
-const PORT = process.env.PORT || 8080
-require("dotenv").config();
 
+if(process.env.NODE_ENV=="testing"){
+    require("dotenv").config(path,'env.testing');
+}else if(process.env.NODE_ENV=="production"){
+    require("dotenv").config(path,'env.production');
+}else {
+    require("dotenv").config();
+}
+
+const PORT = process.env.PORT || 8080
 app.use(express.json());
 
 app.get("/", (req,res)=>{
@@ -14,5 +22,7 @@ app.get("/", (req,res)=>{
 })
 
 app.listen(PORT, ()=>{
+    connectToDB();
+
     console.log("Server started on the port", PORT)
 })
